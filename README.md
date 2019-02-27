@@ -3,7 +3,7 @@
 
 Usage
 
-'''
+```
 //Date转String
 let today = Date()
 let todayString = today.dateString(.full)
@@ -38,4 +38,4 @@ print(diff) //4
 let newdate2 = XLTimeManager.createADay(year: 2019, month: 2, day: 27)
 let diff2 = newdate!.differDays(date: newdate2!)
 print(diff2) //-5
-'''
+```
