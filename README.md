@@ -3,8 +3,8 @@
 
 Usage
 
+# Date转String
 ```
-//Date转String
 let today = Date()
 let todayString = today.dateString(.full)
 print(today)        //2019-02-27 04:11:05 +0000
@@ -31,17 +31,28 @@ print(newDay!) //2019-03-04 04:11:05 +0000
 let newdate = XLTimeManager.createADay(year: 2019, month: 3, day: 4)
 print(newdate!) //2019-03-04 00:00:00 +0000
 
-//日期差值计算 (diff>0:新日期大于老日期, diff<0:新日期小于老日期)
-let diff = today.differDays(date: newdate!)
-print(diff) //4
+/*日期差值计算
+ (1) differDays和differDate只计算差值，适用于倒计时，不足24小时差值不算做1天
+ (2) dayInterval、isSameDay、isBefore、isAfter 无视时分秒计算日期差值
+*/
 
-let newdate2 = XLTimeManager.createADay(year: 2019, month: 2, day: 27)
-let diff2 = newdate!.differDays(date: newdate2!)
-print(diff2) //-5
+let XDaystr = "2019-02-21 03:55"
+let XDate = XDaystr.dateFromFormatter(type: .e)
+let YDaystr = "2019-02-24 03:54"
+let YDate = YDaystr.dateFromFormatter(type: .e)
 
-//aditional: adate:2019-02-27 03:55:00 +0000
-             bdate:2019-02-28 03:54:00 +0000
-             二者并不满足相差日期一天的条件
-             故要注意时分秒的设置，对好都默认为0
+let diff = XDate!.differDays(date: YDate!)
+print(diff)     // 2
+let diff2 = XDate!.differDate(date: YDate!)
+print(diff2)    // [0, 0, 2]
+
+let days = XDate!.dayInterval(another: YDate!)
+print(days)     // 3
+let sameDay = XDate!.isSameDay(another: YDate!)
+print(sameDay)  //false
+let before = XDate!.isBefore(day: YDate!)
+print(before)   //false
+let after = XDate!.isAfter(day: YDate!)
+print(after)    //true
 
 ```
