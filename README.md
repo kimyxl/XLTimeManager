@@ -38,4 +38,10 @@ print(diff) //4
 let newdate2 = XLTimeManager.createADay(year: 2019, month: 2, day: 27)
 let diff2 = newdate!.differDays(date: newdate2!)
 print(diff2) //-5
+
+//aditional: adate:2019-02-27 03:55:00 +0000
+             bdate:2019-02-28 03:54:00 +0000
+             二者并不满足相差日期一天的条件
+             故要注意时分秒的设置，对好都默认为0
+
 ```
