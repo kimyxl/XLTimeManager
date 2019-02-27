@@ -88,7 +88,11 @@ class ViewController: UIViewController {
         print(before)   //false
         let after = XDate!.isAfter(day: YDate!)
         print(after)    //true
-
+        
+        //时间戳转换date
+        let timeinverval:TimeInterval = 1551252796
+        let sdate = timeinverval.dateFromTimeStamp()
+        print(sdate!)
         
     }
 
