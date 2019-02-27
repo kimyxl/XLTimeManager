@@ -108,13 +108,13 @@ extension Date {
     
     func isBefore(day beforeDate:Date) -> Bool {
         let days = self.dayInterval(another: beforeDate)
-        if days < 0 { return true }
+        if days > 0 { return true }
         return false
     }
     
     func isAfter(day afterDay:Date) -> Bool {
         let days = self.dayInterval(another: afterDay)
-        if days > 0 { return true }
+        if days < 0 { return true }
         return false
     }
     

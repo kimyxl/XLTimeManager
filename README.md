@@ -58,9 +58,9 @@ print(days)     // 3
 let sameDay = XDate!.isSameDay(another: YDate!)
 print(sameDay)  //false
 let before = XDate!.isBefore(day: YDate!)
-print(before)   //false
+print(before)   //true
 let after = XDate!.isAfter(day: YDate!)
-print(after)    //true
+print(after)    //false
 ```
 
 ## 时间戳转换date
