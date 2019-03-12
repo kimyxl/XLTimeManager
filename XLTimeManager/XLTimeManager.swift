@@ -9,6 +9,7 @@ import Foundation
 /*所有日期或时(包括date和string)，均为0时区 GMT*/
 
 class XLTimeManager {
+    //提供公历日历
     static let calendar:Calendar = {
         var calendar = Calendar.init(identifier: .gregorian)
         calendar.timeZone = TimeZone.init(identifier: "GMT")!
