@@ -4,12 +4,12 @@
 //  Created by xiaolei on 2019/5/17.
 //  Copyright © 2019 xiaolei. All rights reserved.
 
+
 import Foundation
 
 /*所有日期或时(包括date和string)，均为0时区 GMT*/
 
 class XLTimeManager {
-    //提供公历日历
     static let calendar:Calendar = {
         var calendar = Calendar.init(identifier: .gregorian)
         calendar.timeZone = TimeZone.init(identifier: "GMT")!
@@ -86,19 +86,19 @@ extension Date {
         fatalError("create Date failure")
     }
     
-    func isSameDay(another:Date) -> Bool {
+    func isSameDay(_ another:Date) -> Bool {
         let days = self.dayInterval(another: another)
         if days == 0 { return true }
         return false
     }
-    
-    func isBefore(day beforeDate:Date) -> Bool {
+    ///不包含!
+    func isBefore(_ beforeDate:Date) -> Bool {
         let days = self.dayInterval(another: beforeDate)
         if days > 0 { return true }
         return false
     }
-    
-    func isAfter(day afterDay:Date) -> Bool {
+    ///不包含!
+    func isAfter(_ afterDay:Date) -> Bool {
         let days = self.dayInterval(another: afterDay)
         if days < 0 { return true }
         return false
@@ -108,6 +108,11 @@ extension Date {
     func differDays(date:Date) -> Int {
         let diffDateComponents = XLTimeManager.calendar.dateComponents([Calendar.Component.day], from: self, to: date)
         return diffDateComponents.day ?? 0
+    }
+    // 两日期相差月数, 返回值为正负零, 可判断日期前后(不满24小时不算一天)
+    func differMonths(date:Date) -> Int {
+        let diffDateComponents = XLTimeManager.calendar.dateComponents([Calendar.Component.month], from: self, to: date)
+        return diffDateComponents.month ?? 0
     }
     /// 两日期相隔年月日 -> [年，月，日] (正负值) (不满24小时不算一天)
     func differDate(date:Date) -> [Int] {
@@ -219,7 +224,3 @@ extension TimeInterval {
         return date
     }
 }
-
-
-
-
