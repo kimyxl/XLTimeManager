@@ -22,6 +22,12 @@ class XLTimeManager {
         formatter.locale = locale
         return formatter
     }()
+    fileprivate static let formatterLocal:DateFormatter = {
+        let formatter = DateFormatter.init()
+        let locale = Locale.init(identifier: "en_US")
+        formatter.locale = locale
+        return formatter
+    }()
     fileprivate class func dateComponents(_ date:Date) -> DateComponents {
         let dateComponents = calendar.dateComponents([Calendar.Component.day, Calendar.Component.month, Calendar.Component.year, Calendar.Component.weekOfYear, Calendar.Component.hour, Calendar.Component.minute, Calendar.Component.second, Calendar.Component.weekday, Calendar.Component.timeZone], from: date)
         return dateComponents
@@ -63,6 +69,13 @@ extension Date {
         //常规
         XLTimeManager.formatter.dateFormat = style.rawValue
         let convertedDateString = XLTimeManager.formatter.string(from: self)
+        return convertedDateString
+    }
+    
+    //用于时间戳转本地时间
+    func dateString_localTime(_ style:Date2StringFormatterEnum) -> String {
+        XLTimeManager.formatterLocal.dateFormat = style.rawValue
+        let convertedDateString = XLTimeManager.formatterLocal.string(from: self)
         return convertedDateString
     }
     
