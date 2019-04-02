@@ -82,11 +82,11 @@ class ViewController: UIViewController {
         
         let days = XDate!.dayInterval(another: YDate!)
         print(days)     // 3
-        let sameDay = XDate!.isSameDay(another: YDate!)
+        let sameDay = XDate!.isSameDay(YDate!)
         print(sameDay)  //false
-        let before = XDate!.isBefore(day: YDate!)
+        let before = XDate!.isBefore(YDate!)
         print(before)   //false
-        let after = XDate!.isAfter(day: YDate!)
+        let after = XDate!.isAfter(YDate!)
         print(after)    //true
         
         //时间戳转换date

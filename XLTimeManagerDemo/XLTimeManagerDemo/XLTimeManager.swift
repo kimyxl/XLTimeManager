@@ -3,33 +3,22 @@
 //
 //  Created by xiaolei on 2019/5/17.
 //  Copyright © 2019 xiaolei. All rights reserved.
-/*
- EEEE：表示星期几（如 Monday）。使用 1-3 个字母表示周几的缩略写法。(EEE：Mon)
- MMMM：月份的全写（如 October）。使用 1-3 个字母表示月份的缩略写法。(MMM：Oct, MM：11)
- dd：表示一个月里面日期的数字（如 09 或 15）。
- yyyy：4 个数字表示的年（如 2015）。
- HH：2 个数字表示的小时（如 08 或 19）。
- mm：2 个数字表示的分钟（如 05 或者 54）。
- ss：2 个数字表示的秒。
- zzz：3 个字母表示的时区（如 GMT）。
- GGG：BC 或者 AD。
- */
-/*
- NSDate 对象封装了单个的时间点，独立于任何特定的日历系统或者时区。
- 所有的 NSDate 都存储了一个浮点数，这个浮点数代表了从 2001 年 1 月 1 日 00:00:00 UTC 起的秒数。这些秒数与时区、星期几、月份、夏令时、闰秒或者闰年一点关系都没有。如果所需的计算基于秒数就可以完成，那么它会在 NSDate 上进行。否则，就要借助其他的类型了。
- */
+
 
 import Foundation
-
-/*所有日期或时(包括date和string)，均为0时区 GMT*/
 
 class XLTimeManager {
     static let calendar:Calendar = {
         var calendar = Calendar.init(identifier: .gregorian)
-        calendar.timeZone = TimeZone.init(identifier: "GMT")!
         return calendar
     }()
     fileprivate static let formatter:DateFormatter = {
+        let formatter = DateFormatter.init()
+        let locale = Locale.init(identifier: "en_US")
+        formatter.locale = locale
+        return formatter
+    }()
+    fileprivate static let formatterGMT:DateFormatter = {
         let formatter = DateFormatter.init()
         formatter.timeZone = TimeZone.init(identifier: "GMT")!
         let locale = Locale.init(identifier: "en_US")
@@ -42,7 +31,6 @@ class XLTimeManager {
     }
     class func createADay(year:Int, month:Int, day:Int) -> Date? {
         var components = DateComponents.init()
-        components.timeZone = TimeZone.init(identifier: "GMT")
         components.day = day
         components.month = month
         components.year = year
@@ -53,13 +41,11 @@ class XLTimeManager {
 
 //Date与string转换，不涉及时区问题
 extension String {
-    ///timezone:GMT
     func dateFromFormatter(type formatterType:String2DateFormatterEnum) -> Date? {
         XLTimeManager.formatter.dateFormat = formatterType.rawValue
         let date = XLTimeManager.formatter.date(from: self)
         return date
     }
-    ///timezone:GMT
     func dateFromFormatterStr(formatterStr:String) -> Date? {
         XLTimeManager.formatter.dateFormat = formatterStr
         let date = XLTimeManager.formatter.date(from: self)
@@ -68,7 +54,6 @@ extension String {
 }
 
 extension Date {
-    ///timezone:GMT
     func dateString(_ style:Date2StringFormatterEnum) -> String {
         //特殊判断
         if self.specialShowFormatterList.contains(style) {
@@ -80,9 +65,15 @@ extension Date {
         return convertedDateString
     }
     
+    func dateGMTString(_ style:Date2StringFormatterEnum) -> String {
+        guard self.specialShowFormatterList.contains(style) == false else {return ""}
+        XLTimeManager.formatterGMT.dateFormat = style.rawValue
+        let convertedDateString = XLTimeManager.formatterGMT.string(from: self)
+        return convertedDateString
+    }
+    
     func adding(day:Int, month:Int=0, year:Int=0) -> Date? {
         var components = DateComponents.init()
-        components.timeZone = TimeZone.init(identifier: "GMT")
         components.day = day
         components.month = month
         components.year = year
@@ -90,31 +81,33 @@ extension Date {
         return calculatedDate
     }
     
-    //无视时分秒计算日期差值
-    func dayInterval(another:Date) -> Int {
-        let date1 = XLTimeManager.createADay(year: self.year_digital(), month:  self.month_digital(), day: self.day_digital())
-        let date2 = XLTimeManager.createADay(year: another.year_digital(), month:  another.month_digital(), day: another.day_digital())
-        if let dateR1 = date1, let dateR2 = date2 {
-            return dateR1.differDays(date:dateR2)
-        }
-        fatalError("create Date failure")
+    func get0ClockDate() -> Date {
+        let dateComponents = XLTimeManager.calendar.dateComponents([Calendar.Component.day, Calendar.Component.month, Calendar.Component.year], from: self)
+        return XLTimeManager.createADay(year: dateComponents.year!, month: dateComponents.month!, day: dateComponents.day!)!
     }
     
-    func isSameDay(another:Date) -> Bool {
+    //无视时分秒计算日期差值
+    func dayInterval(another:Date) -> Int {
+        let date1 = self.get0ClockDate()
+        let date2 = another.get0ClockDate()
+        return date1.differDays(date:date2)
+    }
+    
+    func isSameDay(_ another:Date) -> Bool {
         let days = self.dayInterval(another: another)
         if days == 0 { return true }
         return false
     }
-    
-    func isBefore(day beforeDate:Date) -> Bool {
+    ///不包含!
+    func isBefore(_ beforeDate:Date) -> Bool {
         let days = self.dayInterval(another: beforeDate)
-        if days < 0 { return true }
+        if days > 0 { return true }
         return false
     }
-    
-    func isAfter(day afterDay:Date) -> Bool {
+    ///不包含!
+    func isAfter(_ afterDay:Date) -> Bool {
         let days = self.dayInterval(another: afterDay)
-        if days > 0 { return true }
+        if days < 0 { return true }
         return false
     }
     
@@ -122,6 +115,11 @@ extension Date {
     func differDays(date:Date) -> Int {
         let diffDateComponents = XLTimeManager.calendar.dateComponents([Calendar.Component.day], from: self, to: date)
         return diffDateComponents.day ?? 0
+    }
+    // 两日期相差月数, 返回值为正负零, 可判断日期前后(不满24小时不算一天)
+    func differMonths(date:Date) -> Int {
+        let diffDateComponents = XLTimeManager.calendar.dateComponents([Calendar.Component.month], from: self, to: date)
+        return diffDateComponents.month ?? 0
     }
     /// 两日期相隔年月日 -> [年，月，日] (正负值) (不满24小时不算一天)
     func differDate(date:Date) -> [Int] {
@@ -153,7 +151,7 @@ extension Date {
         let dateComponets = XLTimeManager.dateComponents(self)
         return dateComponets.day ?? 0
     }
-
+    
     func hour() -> String {
         let num = self.hour_digital()
         return self.dealSingleString(num)
@@ -233,7 +231,4 @@ extension TimeInterval {
         return date
     }
 }
-
-
-
 

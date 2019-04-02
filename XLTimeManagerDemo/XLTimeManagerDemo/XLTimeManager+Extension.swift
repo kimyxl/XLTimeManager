@@ -17,6 +17,7 @@ enum String2DateFormatterEnum:String {
     case d = "dd-MM-yyyy"
     case e = "yyyy-MM-dd HH:mm"
     case f = "yyyy/MM/dd"
+    case requestApi = "yyyy-MM-dd HH:mm:ss"
 }
 
 //Date->String
@@ -27,7 +28,8 @@ enum Date2StringFormatterEnum:String {
     case dd = "dd MMM yyyy"
     case home = "ddMMM(月份全大写)'yy" //special
     case request = "yyyy-MM-dd"
-    case traveler = "dd MMM'yyyy HH:mm"
+    case requestApi = "yyyy-MM-dd HH:mm:ss"
+    case traveler = "dd MMM'' yyyy HH:mm"
     case bill = "dd MMM yyyy HH:mm:ss"
     case passenger = "dd-MM-yyyy"
     case navTitle = "dd MMM"
@@ -59,4 +61,5 @@ extension Date {
         }
     }
 }
+
 
