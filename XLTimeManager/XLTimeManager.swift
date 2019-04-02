@@ -39,7 +39,6 @@ class XLTimeManager {
     }
 }
 
-//Date与string转换，不涉及时区问题
 extension String {
     func dateFromFormatter(type formatterType:String2DateFormatterEnum) -> Date? {
         XLTimeManager.formatter.dateFormat = formatterType.rawValue
