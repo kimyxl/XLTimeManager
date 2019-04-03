@@ -116,14 +116,14 @@ extension Date {
         if days == 0 { return true }
         return false
     }
-    ///不包含!
-    func isBefore(_ beforeDate:Date) -> Bool {
+    ///不包含，以“天”为单位判断
+    func isBeforeDay(_ beforeDate:Date) -> Bool {
         let days = self.dayInterval(another: beforeDate)
         if days > 0 { return true }
         return false
     }
-    ///不包含!
-    func isAfter(_ afterDay:Date) -> Bool {
+    ///不包含，以“天”为单位判断
+    func isAfterDay(_ afterDay:Date) -> Bool {
         let days = self.dayInterval(another: afterDay)
         if days < 0 { return true }
         return false
@@ -249,5 +249,4 @@ extension TimeInterval {
         return date
     }
 }
-
 
